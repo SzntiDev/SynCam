@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>SynCam - OBS RTX Pro v2</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        canvas { width: 100%; height: 100%; object-fit: contain; display: none; margin: auto; }
+        #status { color: #7c6af7; font-family: 'Courier New', monospace; font-size: 24px; font-weight: bold; text-align: center; text-shadow: 0px 4px 10px rgba(0,0,0,0.8); }
+    </style>
+</head>
+<body>
+    <div id="status">Esperando conexión de cámara celular...<br><span style="font-size:14px;color:#a78bfa;">(Asegúrate de conectar SynCam Desktop)</span></div>
+    <canvas id="gl-canvas"></canvas>
+
+    <script>
+        const glCanvas = document.getElementById('gl-canvas');
+        const statusEl = document.getElementById('status');
+        
+        class WebGLRenderer {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
+                if (!this.gl) return;
+                const vs = `#version 300 es
+                    in vec2 a_p; in vec2 a_t; out vec2 v_t;
+                    void main() { gl_Position = vec4(a_p, 0, 1); v_t = a_t; }`;
+                const fs = `#version 300 es
+                    precision highp float;
+                    uniform sampler2D u_i; uniform vec2 u_s;
+                    uniform float u_b; uniform float u_c; uniform float u_sa; uniform float u_sh;
+                    in vec2 v_t; out vec4 o;
+                    void main() {
+                        vec2 px = vec2(1.)/u_s;
+                        vec3 c = texture(u_i, v_t).rgb;
+                        // Denoise
+                        vec3 soft = (c*2. + texture(u_i, v_t+vec2(0.,-px.y)).rgb + texture(u_i, v_t+vec2(0.,px.y)).rgb + texture(u_i, v_t+vec2(-px.x,0.)).rgb + texture(u_i, v_t+vec2(px.x,0.)).rgb)/6.;
+                        vec3 f = mix(c, soft, 0.3);
+                        // CAS Sharpening
+                        if(u_sh > 0.0) {
+                            vec3 n = texture(u_i, v_t+vec2(0.,-px.y)).rgb; vec3 s = texture(u_i, v_t+vec2(0.,px.y)).rgb;
+                            vec3 w = texture(u_i, v_t+vec2(-px.x,0.)).rgb; vec3 e = texture(u_i, v_t+vec2(px.x,0.)).rgb;
+                            vec3 mn = min(min(min(min(c, n), s), w), e);
+                            vec3 mx = max(max(max(max(c, n), s), w), e);
+                            vec3 wt = clamp(min(mn, 1.0 - mx) / mx, 0.0, 1.0);
+                            f = mix(f, c + (c*4. - n - s - w - e) * (u_sh * wt), 0.8);
+                        }
+                        f *= u_b; f = (f-0.5)*u_c+0.5;
+                        float l = dot(f, vec3(.2126,.7152,.0722));
+                        o = vec4(clamp(mix(vec3(l),f,u_sa),0.,1.), 1.0);
+                    }`;
+                this.prog = this.createP(vs, fs);
+                this.initB();
+                this.tex = this.gl.createTexture();
+                this.gl.bindTexture(3553, this.tex);
+                this.gl.texParameteri(3553, 10241, 9729); this.gl.texParameteri(3553, 10240, 9729);
+            }
+            createP(vsS, fsS) {
+                const p = this.gl.createProgram();
+                const s1 = this.gl.createShader(35633); this.gl.shaderSource(s1, vsS); this.gl.compileShader(s1);
+                const s2 = this.gl.createShader(35632); this.gl.shaderSource(s2, fsS); this.gl.compileShader(s2);
+                this.gl.attachShader(p, s1); this.gl.attachShader(p, s2);
+                this.gl.linkProgram(p); return p;
+            }
+            initB() {
+                this.posB = this.gl.createBuffer();
+                this.gl.bindBuffer(34962, this.posB);
+                this.gl.bufferData(34962, new Float32Array([-1,-1,1,-1,-1,1,1,1]), 35044);
+                this.texB = this.gl.createBuffer();
+            }
+            render(img, s) {
+                const gl = this.gl;
+                const r = s.rotation===90||s.rotation===270;
+                const tW = r ? img.naturalHeight : img.naturalWidth;
+                const tH = r ? img.naturalWidth : img.naturalHeight;
+                if(this.canvas.width!==tW||this.canvas.height!==tH){this.canvas.width=tW;this.canvas.height=tH;}
+                gl.viewport(0,0,this.canvas.width,this.canvas.height);
+                gl.clear(16384);
+                gl.useProgram(this.prog);
+                const pL = gl.getAttribLocation(this.prog, "a_p");
+                gl.enableVertexAttribArray(pL); gl.bindBuffer(34962, this.posB);
+                gl.vertexAttribPointer(pL, 2, 5126, false, 0, 0);
+                const tL = gl.getAttribLocation(this.prog, "a_t");
+                gl.enableVertexAttribArray(tL); gl.bindBuffer(34962, this.texB);
+                const d=0.5/s.zoom; let x1=0.5-d,x2=0.5+d,y1=0.5-d,y2=0.5+d;
+                if(s.mirrorH)[x1,x2]=[x2,x1]; if(s.mirrorV)[y1,y2]=[y2,y1];
+                let uvs = [x1,y2,x2,y2,x1,y1,x2,y1];
+                if(s.rotation===90) uvs=[x1,y1,x1,y2,x2,y1,x2,y2];
+                if(s.rotation===180) uvs=[x2,y1,x1,y1,x2,y2,x1,y2];
+                if(s.rotation===270) uvs=[x2,y2,x2,y1,x1,y2,x1,y1];
+                gl.bufferData(34962, new Float32Array(uvs), 35048);
+                gl.vertexAttribPointer(tL,2,5126,false,0,0);
+                gl.uniform2f(gl.getUniformLocation(this.prog, "u_s"), img.naturalWidth, img.naturalHeight);
+                gl.uniform1f(gl.getUniformLocation(this.prog, "u_b"), s.brightness||1.);
+                gl.uniform1f(gl.getUniformLocation(this.prog, "u_c"), s.contrast||1.);
+                gl.uniform1f(gl.getUniformLocation(this.prog, "u_sa"), s.saturation||1.);
+                gl.uniform1f(gl.getUniformLocation(this.prog, "u_sh"), s.sharpen||0.);
+                gl.bindTexture(3553, this.tex); gl.texImage2D(3553,0,6408,6408,5121,img);
+                gl.drawArrays(5,0,4);
+            }
+        }
+
+        const renderer = new WebGLRenderer(glCanvas);
+        const frameImg = new Image();
+        let state = { rotation:0, mirrorH:false, mirrorV:false, zoom:1, brightness:1, contrast:1, saturation:1, sharpen:0 };
+        let ws;
+        let lastObjectURL = null;
+
+        function connect() {
+            ws = new WebSocket('ws://' + location.host);
+            ws.binaryType = 'arraybuffer'; // Habilitar recepción binaria
+            
+            ws.onopen = () => ws.send(JSON.stringify({ type: 'obs_subscribe' }));
+            ws.onmessage = async (e) => {
+                if (e.data instanceof ArrayBuffer) {
+                    const data = new Uint8Array(e.data);
+                    // Detección SY (0x53, 0x59)
+                    if (data[0] === 0x53 && data[1] === 0x59) {
+                        // Sincronizamos rotación base del móvil
+                        state.baseRotation = data[2] * 90;
+                        state.mirrorH = data[3] === 1;
+                        
+                        // Carga binaria ultra-rápida via Blob
+                        if (lastObjectURL) URL.revokeObjectURL(lastObjectURL);
+                        const blob = new Blob([data.subarray(8)], { type: 'image/jpeg' });
+                        lastObjectURL = URL.createObjectURL(blob);
+                        frameImg.src = lastObjectURL;
+                    }
+                    return;
+                }
+
+                // JSON protocol fallback
+                try {
+                    const msg = JSON.parse(e.data);
+                    if (msg.type === 'frame') {
+                        frameImg.src = msg.frame.startsWith('data:') ? msg.frame : 'data:image/jpeg;base64,'+msg.frame;
+                    } else if (msg.type === 'transform') {
+                        state = { ...state, ...msg };
+                    }
+                } catch (_) {}
+            };
+            ws.onclose = () => setTimeout(connect, 3000);
+        }
+
+        frameImg.onload = () => {
+            const finalRotation = ((state.baseRotation || 0) + (state.rotation || 0)) % 360;
+            renderer.render(frameImg, { ...state, rotation: finalRotation });
+            glCanvas.style.display = 'block';
+            statusEl.style.display = 'none';
+        };
+        connect();
+    </script>
+</body>
+</html>
