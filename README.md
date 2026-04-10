@@ -1,10 +1,10 @@
 <h1 align="center">
   <br>
-  SynCam
+  SynCam <span style="font-size: 0.5em; vertical-align: middle; color: var(--primary);">V2</span>
   <br>
 </h1>
 
-<h4 align="center">High-performance bridge to turn your smartphone into a professional PC webcam.</h4>
+<h4 align="center">A high-performance WebRTC bridge to turn your smartphone into a professional PC webcam.</h4>
 
 <p align="center">
   <em>Read this in other languages: <a href="README.md">English</a>, <a href="README-es.md">Español</a></em>
@@ -20,56 +20,64 @@
 
 ---
 
-> [!NOTE]
-> **SynCam** is designed to overcome common latency and reliability issues in mobile webcam apps by using a custom WebSocket stream and native WebView capture technologies.
+> [!IMPORTANT]
+> **SynCam V2** has officially replaced the legacy WebSocket version. It now utilizes **WebRTC**—the industry standard for real-time communication—to deliver ultra-low latency, synchronized audio, and robust P2P streaming.
 
-**SynCam** is a professional-grade synchronization tool that bridges the gap between high-quality smartphone cameras and desktop environments. By utilizing **Electron** for the desktop side and a specialized **WebView/MediaStream** approach on mobile, it delivers a smooth, low-latency video feed that can be integrated into any production workflow.
+**SynCam** is a professional-grade synchronization tool that bridges the gap between high-quality smartphone cameras and desktop environments. By utilizing **Electron** for the desktop side and a specialized **Native WebRTC** approach on mobile, it delivers a smooth, sub-150ms video feed that can be integrated into any production workflow.
 
-The project focuses on **Connectivity Stability** and **Zero-Config UX**, implementing automatic network tunneling via ADB (for USB) and high-load WebSocket payloads for crystal-clear image transmission.
+The project focuses on **Performance Excellence** and **Technical Depth**, implementing a custom Socket.io signaling server and hardware-accelerated H.264/VP8 encoding for crystal-clear image transmission.
 
 ---
 
 ## ✨ Features
 
-- 🎥 **High-Fidelity Capture**: Switched from standard API capture to a **Native WebView (getUserMedia)** approach, stabilizing framerates and resolving parity issues.
-- ⚡ **Ultra-Low Latency**: Custom WebSocket implementation with a **50MB maxPayload** and a dedicated `heartbeat` system to prevent network drops during long sessions.
-- 🔌 **Plug & Play (USB/ADB)**: Integrated **Android Platform Tools** (ADB) to allow automatic port reversing, enabling high-speed data transfer through USB cables.
-- 🛡️ **Bypass Security**: Custom implementations to allow HTTPS-restricted camera access on local network environments.
-- 🖥️ **Smooth Desktop Rendering**: Uses `requestAnimationFrame` on the desktop side to sync frames with the monitor's refresh rate, eliminating flickering.
-- 🧪 **Future-Proof Driver**: Built with a roadmap for a **Virtual Camera Driver**, aiming for native integration with Zoom, OBS, and Teams.
+- 🎥 **WebRTC Streaming**: Upgraded from JPEG-binary to a full WebRTC pipeline, enabling real-time video encoding (H.264/VP8) and decoding.
+- ⚡ **Ultra-Low Latency**: Achieves sub-**150ms** lag by using UDP-based P2P connections, making it viable for live conferencing and streaming.
+- 🎤 **Synchronized Audio**: Native support for **Opus** audio tracks, ensuring your voice is perfectly in sync with the video feed.
+- 🏢 **Professional Tech Stack**: Desktop powered by **Vite + React + TypeScript** and Mobile powered by **Expo Bare Workflow** with native modules.
+- 📱 **Native Capture**: Directly accesses the camera's hardware buffers on Android, bypassing the overhead of browser-based WebViews.
+- 🌓 **Premium Dark Mode**: Dynamic interface that adapts to system preferences, built with a modern Glassmorphism design.
 
 ---
 
 ## 🚀 How It Works
 
-SynCam manages a complex binary stream between two distinct environments:
+SynCam V2 manages a state-of-the-art P2P communication channel between mobile and desktop:
 
-### 1. Mobile Capture Engine
-The mobile application opens a hidden **WebView** that accesses the device's camera via **MediaDevices**. This allows the app to leverage native hardware acceleration and optimized video encoding before sending frames to the desktop.
+### 1. The Signaling Phase
+Before the video starts, the mobile and desktop apps "meet" via a built-in **Socket.io** server running on the PC. They exchange SDP (Session Description Protocol) records and ICE candidates to map out the best network route.
 
-### 2. The WebSocket Tunnel
-Data is transmitted using a custom WebSocket server hosted on the desktop. The system handles binary image fragments, optimizing memory usage and ensuring that the most recent frame is always prioritized over queued older data.
+### 2. P2P Video Pipeline
+Once the handshake is complete, video data bypasses the server entirely. It flows directly from the smartphone to the PC using a peer-to-peer connection, optimized for minimal jitter and maximum throughput.
 
-### 3. Desktop Processing
-The Electron application receives the stream, processes the binary data into a canvas element, and utilizes hardware-accelerated rendering to maintain a stable 30/60 FPS feed depending on the hardware capabilities.
+### 3. Hardware Acceleration
+The mobile app leverages native encoders to compress the raw camera feed efficiently, while the Electron application utilizes GPU-accelerated decoding to render the incoming stream in a high-performance `<video>` element.
 
 ---
 
 ## 💻 Installation & Usage
 
 ### Prerequisites
-- For Mobile: Android device (iOS support in progress).
-- For Desktop: Windows (x64) environment.
+- **Node.js 22+**
+- **Android Studio SDK** (for native mobile compilation)
+- Both devices must be on the **same local network**.
 
 ### Steps
 1. **Desktop Launch**:
-   Download and open the `SynCam.bat` or navigate to `/desktop` and run:
+   Navigate to `/desktop` and run:
    ```bash
    npm install
-   npm run start
+   npm run dev
    ```
-2. **Mobile Connection**:
-   Open the mobile app and enter the IP address displayed on your desktop screen or connect via USB for automatic ADB detection.
+   Take note of the Local IP displayed in the terminal.
+
+2. **Mobile Launch**:
+   Navigate to `/mobile` and run:
+   ```bash
+   npm install
+   npx expo run:android
+   ```
+   Enter the PC IP in the app and press **START STREAMING**.
 
 ---
 
@@ -77,13 +85,14 @@ The Electron application receives the stream, processes the binary data into a c
 
 ```text
 SynCam/
-├── desktop/             # Electron-based Desktop Client
-│   ├── bin/             # ADB and FFmpeg binary tools
-│   └── src/             # Main process and UI renderer
-├── mobile/              # React Native / Expo Mobile Client
-│   └── android/         # Native Android modules
-├── v2/                  # Next-gen modular architecture (WIP)
-├── Fix-Firewall.bat     # Utility to clear network blockers
+├── desktop/             # Vite + React + Electron + Socket.io (Signaling)
+│   ├── src/             # TypeScript source code
+│   └── main.cjs         # Electron main process
+├── mobile/              # React Native / Expo Bare Workflow
+│   └── App.js           # Native WebRTC implementation
+├── start-desktop.bat    # Quick-launch for PC
+├── start-mobile.bat     # Quick-launch for Mobile
+├── arquitectura.md      # Detailed technical breakdown
 └── README.md            # You are here
 ```
 
@@ -91,10 +100,11 @@ SynCam/
 
 ## ⚙️ Tech Stack
 
-- **[Electron](https://www.electronjs.org/)** for the core desktop application.
-- **[Node.js](https://nodejs.org/)** for the backend WebSocket server and media handling.
-- **[React Native / Expo](https://expo.dev/)** for the mobile interface and native bridging.
-- **[ADB (Android Debug Bridge)](https://developer.android.com/tools/adb)** for high-speed USB tunneling.
+- **[WebRTC](https://webrtc.org/)** for the low-latency media engine.
+- **[React](https://react.dev/)** + **[TypeScript](https://www.typescriptlang.org/)** for a robust and type-safe UI.
+- **[Electron](https://www.electronjs.org/)** for the core desktop container.
+- **[Socket.io](https://socket.io/)** for the real-time signaling backbone.
+- **[Expo](https://expo.dev/)** for cross-platform native mobile capabilities.
 
 ---
-> Project focused on high-speed media synchronization and low-level hardware communication.
+> Project evolved for technical excellence and professional streaming capabilities.

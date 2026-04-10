@@ -1,57 +1,30 @@
 {
   "expo": {
-    "name": "SynCam",
-    "slug": "syncam",
+    "name": "mobile",
+    "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "dark",
-    "scheme": "syncam",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "splash": {
-      "backgroundColor": "#080812"
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#080812"
+        "backgroundColor": "#ffffff"
       },
-      "package": "com.syncam.app",
-      "permissions": [
-        "android.permission.CAMERA",
-        "android.permission.FLASHLIGHT",
-        "android.permission.INTERNET",
-        "android.permission.ACCESS_NETWORK_STATE",
-        "android.permission.ACCESS_WIFI_STATE",
-        "android.permission.CHANGE_WIFI_MULTICAST_STATE",
-        "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_CAMERA",
-        "android.permission.WAKE_LOCK",
-        "android.permission.POST_NOTIFICATIONS"
-      ]
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.mobile"
     },
-    "ios": {
-      "bundleIdentifier": "com.syncam.app",
-      "infoPlist": {
-        "NSCameraUsageDescription": "SynCam necesita acceso a la cámara para transmitir video al PC.",
-        "NSLocalNetworkUsageDescription": "SynCam usa la red local para conectarse al PC."
-      }
-    },
-    "plugins": [
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "SynCam necesita acceso a la cámara para transmitir video."
-        }
-      ],
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "usesCleartextTraffic": true
-          }
-        }
-      ],
-      "./plugins/withSynCamForeground"
-    ]
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
   }
 }
