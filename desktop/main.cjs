@@ -1,44 +1,99 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const http = require('http');
+const os = require('os');
 const { Server } = require('socket.io');
 
 let mainWindow;
 
-// Inicializa el Signal Server para WebRTC
+// ─── Obtener IP local del servidor ────────────────────────────────────────────
+function getLocalIPAddress() {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return '127.0.0.1';
+}
+
+// ─── Servidor de señalización WebRTC ─────────────────────────────────────────
 function initSignalingServer() {
   const server = http.createServer();
-  const io = new Server(server, { cors: { origin: '*' } });
+  const io = new Server(server, {
+    cors: { origin: '*', methods: ['GET', 'POST'] },
+    // Permitir payloads grandes para candidatos ICE
+    maxHttpBufferSize: 1e6,
+  });
+
+  // Guardar referencia a los sockets para poder hacer broadcast selectivo
+  const clients = new Set();
 
   io.on('connection', (socket) => {
-    console.log('[Signaling] Nuevo cliente conectado:', socket.id);
+    clients.add(socket);
+    console.log(`[Signaling] Nuevo cliente: ${socket.id} | Total: ${clients.size}`);
 
-    // Relay simple de mensajes (Offer, Answer, ICE)
+    // Relay de mensajes WebRTC (Offer/Answer/ICE) a los demás clientes
     socket.on('webrtc-message', (data) => {
-      // Reenvía a todos menos al emisor
       socket.broadcast.emit('webrtc-message', data);
     });
 
-    socket.on('disconnect', () => {
-      console.log('[Signaling] Cliente desconectado:', socket.id);
+    // Relay de comandos de control (flip-camera, etc.)
+    socket.on('control', (data) => {
+      socket.broadcast.emit('control', data);
+    });
+
+    socket.on('disconnect', (reason) => {
+      clients.delete(socket);
+      console.log(`[Signaling] Desconectado: ${socket.id} | Razón: ${reason}`);
+    });
+
+    socket.on('error', (err) => {
+      console.error(`[Signaling] Error en socket ${socket.id}:`, err);
     });
   });
 
-  server.listen(8080, () => {
-    console.log('[Signaling] Escuchando en el puerto 8080');
+  const PORT = 8080;
+  server.listen(PORT, '0.0.0.0', () => {
+    const localIP = getLocalIPAddress();
+    console.log('╔════════════════════════════════════════╗');
+    console.log('║         SynCam V2 - Desktop            ║');
+    console.log('╠════════════════════════════════════════╣');
+    console.log(`║  Servidor activo en puerto: ${PORT}       ║`);
+    console.log(`║  IP local para el móvil:               ║`);
+    console.log(`║  ➜  ${localIP.padEnd(35)}║`);
+    console.log('╠════════════════════════════════════════╣');
+    console.log('║  Ingresá esta IP en la app móvil       ║');
+    console.log('╚════════════════════════════════════════╝');
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`[Error] El puerto ${PORT} ya está en uso. Cerrá otra instancia de SynCam.`);
+    } else {
+      console.error('[Signaling] Error del servidor HTTP:', err);
+    }
   });
 }
 
+// ─── Ventana principal de Electron ────────────────────────────────────────────
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 700,
+    width: 1080,
+    height: 720,
+    minWidth: 800,
+    minHeight: 560,
     backgroundColor: '#0d1117',
+    title: 'SynCam V2',
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
-    }
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
   });
+
+  mainWindow.setMenuBarVisibility(false);
 
   const isDev = process.env.NODE_ENV !== 'production';
 
@@ -48,8 +103,13 @@ function createWindow() {
   } else {
     mainWindow.loadFile(path.join(__dirname, 'dist', 'index.html'));
   }
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
 }
 
+// ─── Ciclo de vida de Electron ────────────────────────────────────────────────
 app.whenReady().then(() => {
   initSignalingServer();
   createWindow();

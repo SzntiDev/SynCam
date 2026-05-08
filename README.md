@@ -1,145 +1,99 @@
-# SynCam
+# 🚀 SynCam V2 - High Performance WebCam Ecosystem
 
-A cross-platform synchronization and camera management ecosystem designed for real-time interaction between desktop and mobile devices.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![React Native](https://img.shields.io/badge/Mobile-React--Native-blue.svg)](https://reactnative.dev/)
+[![Electron](https://img.shields.io/badge/Desktop-Electron-47848F.svg)](https://www.electronjs.org/)
+[![WebRTC](https://img.shields.io/badge/Streaming-WebRTC-brightgreen.svg)](https://webrtc.org/)
 
-## Description
-SynCam is a modern solution for unified camera control and media synchronization. It consists of a high-performance desktop application and a versatile mobile app, allowing users to bridge their devices seamlessly. Whether for security, remote monitoring, or creative workflows, SynCam provides a robust framework for real-time data and video streaming.
-
-## Detailed Overview
-This project addresses the need for efficient cross-device communication. The desktop component is built using Vite and React (potentially wrapped in Electron), offering a smooth and responsive management interface. The mobile component, developed with React Native and Expo, allows for portable camera access and remote control features. Together, they form a synchronized network that simplifies device management.
-
-## Features
-- Real-time video streaming between mobile and desktop
-- Bi-directional device control and commands
-- Cross-platform synchronization for media assets
-- Secure and low-latency communication protocol
-- Modular architecture with dedicated `desktop` and `mobile` directories
-- Built-in status monitoring and project tracking (`ESTADO_DEL_PROYECTO.md`)
-
-## Technologies Used
-- Desktop: React, Vite, CSS (Potential Electron integration)
-- Mobile: React Native, Expo
-- Networking: WebSockets (Standard for real-time sync)
-- Build Tools: package-lock.json and npm project management
-
-## Installation Instructions
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/SzntiDev/SynCam.git
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd SynCam
-   ```
-3. To set up the desktop app:
-   ```bash
-   cd desktop
-   ```
-   ```bash
-   npm install
-   ```
-   ```bash
-   npm run dev
-   ```
-4. To set up the mobile app:
-   ```bash
-   cd ../mobile
-   ```
-   ```bash
-   npm install
-   ```
-   ```bash
-   npx expo start
-   ```
-
-## Usage Examples
-To start the entire SynCam ecosystem:
-1. Run `start-desktop.bat` to launch the management interface.
-2. Run `start-mobile.bat` to initialize the Expo mobile client.
-3. Follow the instructions on the desktop app to pair with your mobile device.
-
-## Project Structure
-- `desktop/`: Source code for the desktop management interface.
-- `mobile/`: Source code for the Expo/React Native mobile application.
-- `arquitectura.md`: Detailed documentation on the project's technical structure.
-- `ESTADO_DEL_PROYECTO.md`: Real-time tracking of features and bugs.
-- `TODO.md`: Roadmap and pending tasks.
-- `start-desktop.bat` & `start-mobile.bat`: Convenience launchers for Windows.
-
-## Configuration
-Network configurations and API endpoints can be set in the respective `.env` files within the `desktop` and `mobile` directories.
-
-## API Documentation
-Refer to `explicacion_codigo.md` for an in-depth look at the communication protocol and internal APIs.
-
-## Screenshots or Examples
-*(Placeholders for future UI screenshots)*
-
-## Roadmap / Future Improvements
-- Multi-camera simultaneous support
-- Cloud storage integration for recorded media
-- Advanced motion detection and alerts
-- WebRTC integration for direct peer-to-peer streaming
-
-## Contributing Guidelines
-Contributions are welcome! Please refer to the `TODO.md` for ideas on where to help out. Pull requests should follow the established architecture.
-
-## License
-MIT License
+**SynCam** is a professional-grade solution designed to transform your mobile device into a high-fidelity, low-latency webcam for your PC. Built with cutting-edge technologies like WebRTC and Electron, it offers a seamless bridge between your Android/iOS device and your desktop environment.
 
 ---
 
-# SynCam (Español)
+## 🌟 Key Features
 
-Un ecosistema de sincronización y gestión de cámaras multiplataforma diseñado para la interacción en tiempo real entre dispositivos de escritorio y móviles.
+-   **⚡ Low Latency Streaming:** Real-time video transmission using WebRTC (Peer-to-Peer).
+-   **🔌 Dual Connectivity:** Support for both **WiFi** (WebSockets signaling) and **USB** (ADB tunneling) for maximum stability.
+-   **🎥 Professional Quality:** Optimized for 1080p at 60fps with minimal hardware overhead.
+-   **🔄 Remote Control:** Flip cameras, toggle flash, and rotate orientation directly from the mobile or desktop app.
+-   **🎨 Real-time Filters:** Adjust brightness, contrast, and saturation on the fly (Desktop).
+-   **🔗 OBS Integration:** Built-in bridge for seamless integration with OBS Studio and other streaming software.
 
-## Descripción
-SynCam es una solución moderna para el control unificado de cámaras y la sincronización de medios. Consta de una aplicación de escritorio de alto rendimiento y una aplicación móvil versátil, lo que permite a los usuarios conectar sus dispositivos sin problemas. Ya sea para seguridad, monitoreo remoto o flujos de trabajo creativos.
+---
 
-## Resumen Detallado
-Este proyecto aborda la necesidad de una comunicación eficiente entre dispositivos. El componente de escritorio está construido con Vite y React, ofreciendo una interfaz de gestión fluida. El componente móvil, desarrollado con React Native y Expo, permite el acceso portátil a la cámara y funciones de control remoto.
+## 🛠️ Technical Architecture
 
-## Características
-- Transmisión de video en tiempo real entre móvil y escritorio
-- Control de dispositivos y comandos bidireccionales
-- Sincronización multiplataforma para activos de medios
-- Protocolo de comunicación seguro y de baja latencia
-- Arquitectura modular con directorios dedicados
-- Seguimiento de estado y tareas integrado
+### 🏎️ Signaling & Transmission
+SynCam uses a hybrid signaling approach:
+1.  **Signaling Server:** A Node.js/Socket.io server running on the Desktop handles the initial WebRTC handshake (SDP Offer/Answer).
+2.  **P2P Stream:** Once the handshake is complete, video data flows directly between devices via WebRTC, bypassing the server for ultra-low latency.
+3.  **ADB Tunneling:** For USB mode, SynCam automates `adb reverse` to create a secure tunnel, allowing the mobile app to communicate with the PC as if it were on `localhost`.
 
-## Tecnologías Utilizadas
-- Escritorio: React, Vite, CSS
-- Móvil: React Native, Expo
-- Redes: WebSockets
+### 📂 Project Structure
+-   `desktop/`: Electron + React (Vite) application. Acts as the receiver and control center.
+-   `mobile/`: React Native (Expo) application. Acts as the high-performance camera source.
+-   `scripts/`: Automation scripts for ADB and environment setup.
 
-## Instrucciones de Instalación
-1. Clonar el repositorio:
-   ```bash
-   git clone https://github.com/SzntiDev/SynCam.git
-   ```
-2. Navegar al directorio `SynCam`.
-3. Para configurar el escritorio:
-   ```bash
-   cd desktop
-   ```
-   ```bash
-   npm install
-   ```
-4. Para configurar el móvil:
-   ```bash
-   cd ../mobile
-   ```
-   ```bash
-   npm install
-   ```
+---
 
-## Estructura del Proyecto
-- `desktop/`: Interfaz de gestión de escritorio.
-- `mobile/`: Aplicación móvil Expo.
-- `arquitectura.md`: Documentación técnica de la estructura.
+## 🚀 Getting Started
 
-## Guía para Contribuir
-¡Las contribuciones son bienvenidas! Revisa `TODO.md` para ver tareas pendientes.
+### Prerequisites
+-   **Node.js** (v16 or higher)
+-   **ADB Drivers** (for USB mode)
+-   **Expo Go** app on your mobile device (for development)
 
-## Licencia
-Licencia MIT
+### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/SzntiDev/SynCam.git
+    cd SynCam
+    ```
+
+2.  **Setup Desktop:**
+    ```bash
+    cd desktop
+    npm install
+    npm run dev
+    ```
+
+3.  **Setup Mobile:**
+    ```bash
+    cd ../mobile
+    npm install
+    npx expo start
+    ```
+
+### Usage
+-   **WiFi Mode:** Ensure both devices are on the same network. Enter the PC's IP in the mobile app.
+-   **USB Mode:** Connect via USB and run `start-mobile.bat`. Select "Option 1" to start the ADB tunnel.
+
+---
+
+## 🇪🇸 SynCam V2 (Español)
+
+**SynCam** es una solución de nivel profesional diseñada para transformar tu dispositivo móvil en una cámara web de alta fidelidad y baja latencia para tu PC.
+
+### Características Principales
+-   **Transmisión Ultra Rápida:** Video en tiempo real mediante WebRTC.
+-   **Conexión Dual:** Soporte para WiFi y USB (vía ADB).
+-   **Calidad Profesional:** Optimizado para 1080p/60fps.
+-   **Control Remoto:** Cambia de cámara o enciende el flash desde el PC.
+
+### Arquitectura Técnica
+El sistema utiliza un servidor de señalización basado en **Socket.io** para establecer la conexión WebRTC. En modo USB, se utiliza **ADB Reverse** para garantizar una conexión estable y sin interferencias de red.
+
+---
+
+## 🗺️ Roadmap
+-   [ ] **Wireless Audio:** Stream mobile mic audio to PC.
+-   [ ] **Virtual Camera Driver:** Direct system-level webcam integration (no OBS needed).
+-   [ ] **Background Service:** Keep streaming even when the mobile screen is off.
+-   [ ] **Multi-Camera Support:** Connect multiple devices simultaneously.
+
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+*Developed with ❤️ by [SzntiDev](https://github.com/SzntiDev)*
+
