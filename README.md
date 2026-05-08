@@ -1,6 +1,6 @@
 # 🚀 SynCam V2 - High Performance WebCam Ecosystem
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
 [![React Native](https://img.shields.io/badge/Mobile-React--Native-blue.svg)](https://reactnative.dev/)
 [![Electron](https://img.shields.io/badge/Desktop-Electron-47848F.svg)](https://www.electronjs.org/)
 [![WebRTC](https://img.shields.io/badge/Streaming-WebRTC-brightgreen.svg)](https://webrtc.org/)
@@ -92,7 +92,7 @@ El sistema utiliza un servidor de señalización basado en **Socket.io** para es
 -   [ ] **Multi-Camera Support:** Connect multiple devices simultaneously.
 
 ## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is released into the public domain under [The Unlicense](LICENSE). You are free to use, modify, and distribute it without any restrictions.
 
 ---
 *Developed with ❤️ by [SzntiDev](https://github.com/SzntiDev)*

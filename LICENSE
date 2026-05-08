@@ -1,46 +1,48 @@
-﻿MIT License
+This is free and unencumbered software released into the public domain.
 
-Copyright (c) 2026 Santiago
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+For more information, please refer to <http://unlicense.org/>
 
 -------------------------------------------------------------------------------
 
-Licencia MIT
+Este es software libre y no gravado lanzado al dominio público.
 
-Copyright (c) 2026 Santiago
+Cualquier persona es libre de copiar, modificar, publicar, usar, compilar, vender o
+distribuir este software, ya sea en forma de código fuente o como un binario compilado, 
+para cualquier propósito, comercial o no comercial, y por cualquier medio.
 
-Por la presente se concede permiso, de forma gratuita, a cualquier persona que
-obtenga una copia de este software y de los archivos de documentación asociados
-(el "Software"), para tratar el Software sin restricción, incluyendo, sin
-limitación, los derechos de uso, copia, modificación, fusión, publicación,
-distribución, sublicencia y/o venta de copias del Software, y para permitir a
-las personas a las que se les proporcione el Software a hacer lo mismo, sujeto
-a las siguientes condiciones:
+En las jurisdicciones que reconocen las leyes de derechos de autor, el autor o autores
+de este software dedican cualquier y todo interés de derechos de autor en el
+software al dominio público. Hacemos esta dedicación para el beneficio del público en 
+general y en detrimento de nuestros herederos y sucesores. Tenemos la intención de que 
+esta dedicación sea un acto manifiesto de renuncia a perpetuidad de todos los derechos 
+presentes y futuros de este software bajo la ley de derechos de autor.
 
-El aviso de copyright anterior y este aviso de permiso se incluirán en todas
-las copias o partes sustanciales del Software.
+EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O IMPLÍCITA, 
+INCLUYENDO PERO NO LIMITADO A GARANTÍAS DE COMERCIALIZACIÓN, IDONEIDAD PARA UN PROPÓSITO 
+PARTICULAR E INCUMPLIMIENTO. EN NINGÚN CASO LOS AUTORES SERÁN RESPONSABLES DE NINGUNA 
+RECLAMACIÓN, DAÑOS U OTRA RESPONSABILIDAD, YA SEA EN UNA ACCIÓN DE CONTRATO, AGRAVIO O 
+DE OTRO MODO, DERIVADA DE, FUERA DE O EN CONEXIÓN CON EL SOFTWARE O EL USO U OTROS 
+TRATOS EN EL SOFTWARE.
 
-EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O
-IMPLÍCITA, INCLUYENDO PERO NO LIMITADO A GARANTÍAS DE COMERCIALIZACIÓN,
-IDONEIDAD PARA UN PROPÓSITO PARTICULAR E INCUMPLIMIENTO. EN NINGÚN CASO LOS
-AUTORES O TITULARES DEL COPYRIGHT SERÁN RESPONSABLES DE NINGUNA RECLAMACIÓN,
-DAÑOS U OTRA RESPONSABILIDAD, YA SEA EN UNA ACCIÓN DE CONTRATO, AGRAVIO O
-CUALQUIER OTRO MOTIVO, DERIVADA DE, FUERA DE O EN CONEXIÓN CON EL SOFTWARE O
-EL USO U OTROS TRATOS EN EL SOFTWARE.
+Para más información, consulte <http://unlicense.org/>
